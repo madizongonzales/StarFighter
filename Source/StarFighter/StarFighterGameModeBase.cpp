@@ -6,6 +6,9 @@
 #include "CapsulaGeneradorArmamento.h"
 #include "CapsulaGeneradorEnergia.h"
 #include "CapsulaGeneradorVida.h"
+#include "ConcreteEnemy.h"
+#include "MeleeEnemy.h"
+#include "ProjectileEnemy.h"
 #include "Builder_Main.h"
 
 void AStarFighterGameModeBase::Tick(float DeltaTime)
@@ -47,6 +50,28 @@ void AStarFighterGameModeBase::BeginPlay()
 	UE_LOG(LogTemp, Warning, TEXT("Dentro de BeginPlay en GameModeBase"));
 	GetWorld()->SpawnActor<ANaveTerrestreEnemiga01>(FVector::ZeroVector, FRotator::ZeroRotator);
 	GetWorld()->SpawnActor<ABuilder_Main>(FVector(-400.0f, 580.0f, 80.0f), FRotator::ZeroRotator);
+	//Spawn a Concrete Enemy
+	AConcreteEnemy* ConcreteEnemy = GetWorld()->SpawnActor<AConcreteEnemy>(FVector(-400.0f, 580.0f, 100.0f), FRotator(0.0f, 180.0f, 0.0f));
+
+	//Spawn a Melee Enemy and set its Enemy to the Concrete one 
+	AMeleeEnemy* MeleeEnemy = GetWorld()->SpawnActor<AMeleeEnemy>(AMeleeEnemy::StaticClass());
+	MeleeEnemy->SetEnemy(ConcreteEnemy);
+
+	//Spawn a Projectile Enemy and set its Enemy to the Melee one
+	AProjectileEnemy* ProjectileEnemy = GetWorld()->SpawnActor<AProjectileEnemy>(AProjectileEnemy::StaticClass());
+	ProjectileEnemy->SetEnemy(MeleeEnemy);
+
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, TEXT("Melee Enemies are on the horizon"));
+	Enemy = MeleeEnemy;
+	Enemy->Fight();
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("Melee Enemies cause %i damage"), Enemy->GetDamage()));
+	Enemy->Die();
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, TEXT("Enemies are now armed with guns"));
+	Enemy = ProjectileEnemy;
+	Enemy->Fight();
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("Projectile Enemies cause %i damage"), Enemy->GetDamage()));
+	Enemy->Die();
+
 }
 
 AStarFighterGameModeBase::AStarFighterGameModeBase()

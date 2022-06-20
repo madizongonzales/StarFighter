@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "Enemy.h"
 #include "StarFighterGameModeBase.generated.h"
 
 /**
@@ -23,6 +24,8 @@ protected:
 
 public:
 	AStarFighterGameModeBase();
+
+	IEnemy* Enemy;
 
 	template<typename T>
 	T SpawnNave();
