@@ -12,7 +12,7 @@ void AStarFighterGameModeBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	float ProbabilidadAparicionCapsula = FMath::RandRange(6, 12);
+	float ProbabilidadAparicionCapsula = FMath::RandRange(0, 100);
 
 	if (ProbabilidadAparicionCapsula < 5.0f) 
 	{

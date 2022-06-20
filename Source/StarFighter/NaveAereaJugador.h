@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "NaveAerea.h"
 #include "InventoryComponent.h"
+#include "SS_MovimientoNaveAereaJugador.h"
 #include "NaveAereaJugador.generated.h"
 
 /**
@@ -23,6 +24,9 @@ class STARFIGHTER_API ANaveAereaJugador : public ANaveAerea
 	/** Camera boom positioning the camera above the character */
 	UPROPERTY(Category = Camera, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 		class USpringArmComponent* CameraBoom;
+
+protected:
+	virtual void BeginPlay() override;
 
 public:
 	ANaveAereaJugador();
@@ -107,5 +111,11 @@ private:
 
 	float FireForwardValue;
 	float FireRightValue;
+private:
+	ISS_MovimientoNaveAereaJugador* MoveJugador;
+public:
+	void SetNaveJugador(AActor* SlingShotObj);
+	void MovimientoUP(float AxisValue);
+	void MovimientoRight(float AxisValue);
 
 };

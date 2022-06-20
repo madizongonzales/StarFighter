@@ -5,11 +5,18 @@
 #include "Proyectil.h"
 #include "ProyectilBala.h"
 #include "ProyectilBomba.h"
+#include "SS_PlayerAdapter.h"
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
+
+void ANaveAereaJugador::BeginPlay()
+{
+	ASS_PlayerAdapter* MoveAdapter = GetWorld()->SpawnActor<ASS_PlayerAdapter>(ASS_PlayerAdapter::StaticClass());
+	SetNaveJugador(MoveAdapter);
+}
 
 ANaveAereaJugador::ANaveAereaJugador()
 {
@@ -63,6 +70,13 @@ void ANaveAereaJugador::SetupPlayerInputComponent(class UInputComponent* PlayerI
 	PlayerInputComponent->BindAction(TEXT("FireBomba"), IE_Pressed, this, &ANaveAereaJugador::FireBomba);
 	PlayerInputComponent->BindAction(TEXT("DropItem"), EInputEvent::IE_Pressed, this, &ANaveAereaJugador::DropItem);
 	PlayerInputComponent->BindAction(TEXT("ShowInventory"), EInputEvent::IE_Pressed, this, &ANaveAereaJugador::ShowInventory);
+
+	/*PlayerInputComponent->BindAxis("MoveUp", IE_Pressed, this, &ANaveAereaJugador::MovimientoUP);*/
+	//PlayerInputComponent->BindAxis(FName("MoveUp1"), this, &ANaveAereaJugador::MovimientoUP);
+	//PlayerInputComponent->BindAxis(FName("MoveRight1"), this, &ANaveAereaJugador::MovimientoRight);
+
+	//PlayerInputComponent->BindAction(TEXT("MovimientoUP"), EInputEvent::IE_Pressed, this, &ANaveAereaJugador::MovimientoUP);
+	//PlayerInputComponent->BindAction(TEXT("MovimientoRight"), EInputEvent::IE_Pressed, this, &ANaveAereaJugador::MovimientoRight);
 }
 
 void ANaveAereaJugador::ShowInventory()
@@ -73,6 +87,38 @@ void ANaveAereaJugador::ShowInventory()
 	}
 
 }
+
+void ANaveAereaJugador::SetNaveJugador(AActor* SlingShotObj)
+{
+	MoveJugador = Cast<ISS_MovimientoNaveAereaJugador>(SlingShotObj);
+
+	if (!MoveJugador)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("invalid cast! see output log for more details")));
+		UE_LOG(LogTemp, Warning, TEXT("SetSlingShot(); The Actor not a SlingShot! are you that the Actor implements that interface"));
+	}
+}
+
+//void ANaveAereaJugador::MovimientoUP(float AxisValue)
+//{
+//	//if (!MoveJugador)
+//	//{
+//	//	//UE_LOG(LogTemp, Warning, TEXT("Sling(); Weapon is Nulll , make sure it`s initialized"));
+//	//}
+//
+//	MoveJugador->MoveUp1(AxisValue);
+//}
+//
+//void ANaveAereaJugador::MovimientoRight(float AxisValue)
+//{
+//	//if (!MoveJugador)
+//	//{
+//	//	UE_LOG(LogTemp, Warning, TEXT("Sling(); Weapon is Nulll , make sure it`s initialized"));
+//	//}
+//
+//
+//	MoveJugador->MoveRight1(AxisValue);
+//}
 
 void ANaveAereaJugador::Tick(float DeltaSeconds)
 {
